@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillMatrix - Employee Skill Matrix & Project Staffing Recommender</title>
+    <style>
+        /* =========================================================
+           MONOCHROME MINIMALIST THEME (WHITE & BLACK ONLY)
+           ========================================================= */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: #ffffff;
+            color: #111111;
+            line-height: 1.5;
+            padding: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            border-bottom: 2px solid #111111;
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+
+        header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+        }
+
+        header p {
+            font-size: 13px;
+            color: #555555;
+            margin-top: 4px;
+        }
+
+        /* Navigation Tabs */
+        nav {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid #cccccc;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: #ffffff;
+            color: #111111;
+            border: 1px solid #cccccc;
+            border-bottom: none;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .tab-btn:hover {
+            background: #f2f2f2;
+        }
+
+        .tab-btn.active {
+            background: #111111;
+            color: #ffffff;
+            border-color: #111111;
+        }
+
+        /* Sections */
+        .section-panel {
+            display: none;
+        }
+
+        .section-panel.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Cards and Containers */
+        .card {
+            border: 1px solid #cccccc;
+            padding: 20px;
+            margin-bottom: 24px;
+            background: #ffffff;
+        }
+
+        .card h3 {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #eeeeee;
+            padding-bottom: 6px;
+        }
+
+        /* Forms */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #222222;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        select {
+            padding: 8px 10px;
+            border: 1px solid #cccccc;
+            background: #ffffff;
+            color: #111111;
+            font-size: 13px;
+            outline: none;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #000000;
+        }
+
+        /* Buttons */
+        button.btn-primary {
+            background: #000000;
+            color: #ffffff;
+            border: 1px solid #000000;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        button.btn-primary:hover {
+            background: #333333;
+        }
+
+        button.btn-secondary {
+            background: #ffffff;
+            color: #111111;
+            border: 1px solid #111111;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button.btn-secondary:hover {
+            background: #f2f2f2;
+        }
+
+        button.btn-danger {
+            background: #ffffff;
+            color: #111111;
+            border: 1px solid #cccccc;
+            padding: 4px 8px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        button.btn-danger:hover {
+            background: #111111;
+            color: #ffffff;
+            border-color: #111111;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            font-size: 13px;
+        }
+
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 10px 12px;
+            text-align: left;
+        }
+
+        th {
+            background: #f9f9f9;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            color: #333333;
+        }
+
+        tr:hover td {
+            background: #fafafa;
+        }
+
+        /* Tags and Badges */
+        .badge {
+            display: inline-block;
+            border: 1px solid #111111;
+            padding: 2px 6px;
+            font-size: 11px;
+            margin: 2px 4px 2px 0;
+            font-weight: 500;
+        }
+
+        .badge-gray {
+            border-color: #888888;
+            color: #444444;
+            background: #f4f4f4;
+        }
+
+        .badge-gap {
+            border: 1px solid #000000;
+            background: #000000;
+            color: #ffffff;
+        }
+
+        /* Dynamic Skill Row inside Forms */
+        .skill-select-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .skill-select-row select {
+            flex: 1;
+        }
+
+        /* Toast / Notification Banner */
+        #notification-box {
+            display: none;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            border: 1px solid #111111;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        #notification-box.success {
+            background: #ffffff;
+            border-left: 6px solid #111111;
+        }
+
+        #notification-box.error {
+            background: #ffffff;
+            border-left: 6px solid #555555;
+            font-weight: 600;
+        }
+
+        /* Score meter */
+        .metric-box {
+            display: inline-block;
+            padding: 12px 18px;
+            border: 1px solid #cccccc;
+            margin-right: 12px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: #666666;
+            text-transform: uppercase;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 48px;
+            padding-top: 16px;
+            border-top: 1px solid #e0e0e0;
+            font-size: 12px;
+            color: #777777;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>SkillMatrix</h1>
+        <p>Employee Skill Matrix & Project Staffing Recommender &bull; REST API Backend</p>
+    </header>
+
+    <div id="notification-box"></div>
+
+    <nav>
+        <button class="tab-btn active" onclick="switchTab('employees')">1. Employees</button>
+        <button class="tab-btn" onclick="switchTab('skills')">2. Skills</button>
+        <button class="tab-btn" onclick="switchTab('projects')">3. Projects</button>
+        <button class="tab-btn" onclick="switchTab('allocations')">4. Allocations</button>
+        <button class="tab-btn" onclick="switchTab('recommendations')">5. Recommendations</button>
+        <button class="tab-btn" onclick="switchTab('coverage')">6. Skill Coverage</button>
+    </nav>
+
+    <!-- ==========================================
+         SECTION 1: EMPLOYEES
+         ========================================== -->
+    <section id="tab-employees" class="section-panel active">
+        <div class="section-title">
+            <span>Employees Management</span>
+            <div>
+                <button class="btn-secondary" onclick="toggleAvailableEmployeesOnly()" id="filter-avail-btn">Filter: All Employees</button>
+                <button class="btn-secondary" onclick="loadEmployees()">Refresh</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Add New Employee</h3>
+            <form id="employee-form" onsubmit="handleCreateEmployee(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="emp-name">Employee Full Name *</label>
+                        <input type="text" id="emp-name" placeholder="e.g. Jane Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="emp-email">Work Email *</label>
+                        <input type="email" id="emp-email" placeholder="e.g. jane.doe@example.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label>Skills & Proficiency Levels (1=Beginner, 2=Intermediate, 3=Advanced, 4=Expert, 5=Master)</label>
+                    <div id="employee-skills-container"></div>
+                    <button type="button" class="btn-secondary" onclick="addEmployeeSkillRow()" style="margin-top: 6px;">+ Add Skill</button>
+                </div>
+
+                <button type="submit" class="btn-primary">Save Employee</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>Employees Matrix</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Skills & Proficiency</th>
+                        <th>Availability Status</th>
+                        <th style="width: 80px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="employees-table-body">
+                    <tr><td colspan="6" style="text-align: center;">Loading employees...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         SECTION 2: SKILLS
+         ========================================== -->
+    <section id="tab-skills" class="section-panel">
+        <div class="section-title">
+            <span>Skills Directory</span>
+            <button class="btn-secondary" onclick="loadSkills()">Refresh</button>
+        </div>
+
+        <div class="card">
+            <h3>Add New Skill</h3>
+            <form id="skill-form" onsubmit="handleCreateSkill(event)">
+                <div class="form-grid" style="grid-template-columns: 1fr auto;">
+                    <div class="form-group">
+                        <label for="skill-name">Skill Name *</label>
+                        <input type="text" id="skill-name" placeholder="e.g. Kubernetes, AWS, TypeScript" required>
+                    </div>
+                    <div style="display: flex; align-items: flex-end;">
+                        <button type="submit" class="btn-primary">Add Skill</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>Registered Skills</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">ID</th>
+                        <th>Skill Name</th>
+                        <th style="width: 80px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="skills-table-body">
+                    <tr><td colspan="3" style="text-align: center;">Loading skills...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         SECTION 3: PROJECTS
+         ========================================== -->
+    <section id="tab-projects" class="section-panel">
+        <div class="section-title">
+            <span>Projects Management</span>
+            <button class="btn-secondary" onclick="loadProjects()">Refresh</button>
+        </div>
+
+        <div class="card">
+            <h3>Create New Project</h3>
+            <form id="project-form" onsubmit="handleCreateProject(event)">
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label for="project-name">Project Title *</label>
+                    <input type="text" id="project-name" placeholder="e.g. NextGen Microservices Platform" required>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label>Required Skills & Minimum Proficiency (1 to 5)</label>
+                    <div id="project-skills-container"></div>
+                    <button type="button" class="btn-secondary" onclick="addProjectSkillRow()" style="margin-top: 6px;">+ Add Required Skill</button>
+                </div>
+
+                <button type="submit" class="btn-primary">Create Project</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>Active Projects</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">ID</th>
+                        <th>Project Name</th>
+                        <th>Required Skills (Min Level)</th>
+                        <th style="width: 250px;">Quick Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="projects-table-body">
+                    <tr><td colspan="4" style="text-align: center;">Loading projects...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         SECTION 4: ALLOCATIONS
+         ========================================== -->
+    <section id="tab-allocations" class="section-panel">
+        <div class="section-title">
+            <span>Project Allocations</span>
+            <button class="btn-secondary" onclick="loadAllocations()">Refresh</button>
+        </div>
+
+        <div class="card">
+            <h3>Assign Employee to Project</h3>
+            <p style="font-size: 12px; color: #555555; margin-bottom: 12px;">
+                Note: Total allocation for an employee cannot exceed 100%. Attempting to exceed will return a validation error.
+            </p>
+            <form id="allocation-form" onsubmit="handleCreateAllocation(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="alloc-employee">Select Employee *</label>
+                        <select id="alloc-employee" required onchange="updateEmployeeCapacityNotice()"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="alloc-project">Select Project *</label>
+                        <select id="alloc-project" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="alloc-percentage">Allocation Percentage *</label>
+                        <select id="alloc-percentage" required>
+                            <option value="25">25% (Partially Allocated)</option>
+                            <option value="50" selected>50% (Partially Allocated)</option>
+                            <option value="75">75% (Partially Allocated)</option>
+                            <option value="100">100% (Fully Allocated)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="alloc-capacity-notice" style="font-size: 12px; margin-bottom: 12px; font-weight: 600;"></div>
+
+                <button type="submit" class="btn-primary">Assign Allocation</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>Current Allocations</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">ID</th>
+                        <th>Employee</th>
+                        <th>Project</th>
+                        <th>Allocation %</th>
+                        <th>Status</th>
+                        <th style="width: 80px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="allocations-table-body">
+                    <tr><td colspan="6" style="text-align: center;">Loading allocations...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         SECTION 5: RECOMMENDATIONS
+         ========================================== -->
+    <section id="tab-recommendations" class="section-panel">
+        <div class="section-title">
+            <span>Staffing Recommender</span>
+        </div>
+
+        <div class="card">
+            <h3>Select Project for Staffing Recommendation</h3>
+            <div class="form-grid" style="grid-template-columns: 1fr auto; align-items: flex-end;">
+                <div class="form-group">
+                    <label for="rec-project-select">Target Project</label>
+                    <select id="rec-project-select"></select>
+                </div>
+                <button type="button" class="btn-primary" onclick="loadRecommendationsForSelectedProject()">Get Best Fit Recommendations</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 id="rec-results-title" style="margin-bottom: 0; border: none;">Ranked Available Candidates</h3>
+                <span id="rec-results-subtitle" style="font-size: 12px; color: #555555;"></span>
+            </div>
+            <p style="font-size: 12px; color: #555555; margin-bottom: 12px;">
+                Algorithm prefers: 1. Employees satisfying more required skills &bull; 2. Proficiency meeting/exceeding required level &bull; 3. Remaining capacity.
+            </p>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">Rank</th>
+                        <th>Candidate</th>
+                        <th>Skill Match Breakdown</th>
+                        <th>Remaining Capacity</th>
+                        <th>Match Score</th>
+                        <th style="width: 100px;">Staffing Action</th>
+                    </tr>
+                </thead>
+                <tbody id="recommendations-table-body">
+                    <tr><td colspan="6" style="text-align: center;">Select a project above to view ranked employee recommendations.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         SECTION 6: SKILL COVERAGE
+         ========================================== -->
+    <section id="tab-coverage" class="section-panel">
+        <div class="section-title">
+            <span>Skill Coverage Analysis</span>
+        </div>
+
+        <div class="card">
+            <h3>Analyze Project Skill Coverage & Gaps</h3>
+            <div class="form-grid" style="grid-template-columns: 1fr auto; align-items: flex-end;">
+                <div class="form-group">
+                    <label for="cov-project-select">Target Project</label>
+                    <select id="cov-project-select"></select>
+                </div>
+                <button type="button" class="btn-primary" onclick="loadCoverageForSelectedProject()">Analyze Skill Coverage</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div id="coverage-summary-metrics" style="display: none; margin-bottom: 16px;"></div>
+
+            <h3>Skill Matrix Coverage Breakdown</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Required Skill</th>
+                        <th>Required Min Proficiency</th>
+                        <th>Status</th>
+                        <th>Available Matching Employees</th>
+                        <th>Gap Analysis</th>
+                    </tr>
+                </thead>
+                <tbody id="coverage-table-body">
+                    <tr><td colspan="5" style="text-align: center;">Select a project above to view skill coverage and gap report.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <footer>
+        <span>SkillMatrix College Project &bull; Spring Boot + MySQL + Pure Vanilla Frontend</span>
+        <span>IntelliJ IDEA Compatible</span>
+    </footer>
+
+    <!-- ==========================================
+         JAVASCRIPT LOGIC
+         ========================================== -->
+    <script>
+        const API_BASE = '/api';
+
+        // Global State Cache
+        let cachedSkills = [];
+        let cachedEmployees = [];
+        let cachedProjects = [];
+        let filterAvailableOnly = false;
+
+        // Initialize Application
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSkills();
+            loadEmployees();
+            loadProjects();
+            loadAllocations();
+        });
+
+        // ------------------------------------------
+        // Tab Navigation
+        // ------------------------------------------
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.section-panel').forEach(panel => panel.classList.remove('active'));
+
+            const selectedBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
+            if (selectedBtn) selectedBtn.classList.add('active');
+
+            const panel = document.getElementById(`tab-${tabId}`);
+            if (panel) panel.classList.add('active');
+
+            if (tabId === 'recommendations' || tabId === 'coverage') {
+                populateProjectDropdowns();
+            }
+        }
+
+        // ------------------------------------------
+        // Notification Box
+        // ------------------------------------------
+        function showNotification(message, isError = false) {
+            const box = document.getElementById('notification-box');
+            box.className = isError ? 'error' : 'success';
+            box.textContent = message;
+            box.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => {
+                box.style.display = 'none';
+            }, 5000);
+        }
+
+        // ------------------------------------------
+        // Helper: Proficiency Label
+        // ------------------------------------------
+        function getProficiencyText(level) {
+            switch(parseInt(level)) {
+                case 1: return '1 - Beginner';
+                case 2: return '2 - Intermediate';
+                case 3: return '3 - Advanced';
+                case 4: return '4 - Expert';
+                case 5: return '5 - Master';
+                default: return level;
+            }
+        }
+
+        // ==========================================
+        // 1. SKILLS LOGIC
+        // ==========================================
+        async function loadSkills() {
+            try {
+                const res = await fetch(`${API_BASE}/skills`);
+                cachedSkills = await res.json();
+                renderSkillsTable();
+                populateSkillDropdownRows();
+            } catch (err) {
+                console.error('Failed to load skills:', err);
+            }
+        }
+
+        function renderSkillsTable() {
+            const tbody = document.getElementById('skills-table-body');
+            if (!cachedSkills || cachedSkills.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align: center;">No skills registered yet.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = cachedSkills.map(s => `
+                <tr>
+                    <td>${s.id}</td>
+                    <td><strong>${escapeHtml(s.name)}</strong></td>
+                    <td>
+                        <button class="btn-danger" onclick="deleteSkill(${s.id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function handleCreateSkill(e) {
+            e.preventDefault();
+            const name = document.getElementById('skill-name').value.trim();
+            if (!name) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/skills`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name })
+                });
+
+                if (res.ok) {
+                    showNotification(`Skill "${name}" added successfully.`);
+                    document.getElementById('skill-form').reset();
+                    loadSkills();
+                } else {
+                    const err = await res.json();
+                    showNotification(err.error || 'Failed to add skill', true);
+                }
+            } catch (err) {
+                showNotification('Network error while adding skill', true);
+            }
+        }
+
+        async function deleteSkill(id) {
+            if (!confirm('Are you sure you want to delete this skill? It will also be removed from employees and projects.')) return;
+            try {
+                const res = await fetch(`${API_BASE}/skills/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    showNotification('Skill deleted successfully.');
+                    loadSkills();
+                    loadEmployees();
+                    loadProjects();
+                } else {
+                    const err = await res.json();
+                    showNotification(err.error || 'Failed to delete skill', true);
+                }
+            } catch (err) {
+                showNotification('Error deleting skill', true);
+            }
+        }
+
+        // ==========================================
+        // 2. EMPLOYEES LOGIC
+        // ==========================================
+        async function loadEmployees() {
+            try {
+                const url = filterAvailableOnly ? `${API_BASE}/employees/available` : `${API_BASE}/employees`;
+                const res = await fetch(url);
+                const data = await res.json();
+
+                if (filterAvailableOnly) {
+                    // Normalize structure from /api/employees/available
+                    cachedEmployees = data.map(item => ({
+                        id: item.id,
+                        name: item.name,
+                        email: item.email,
+                        availabilityStatus: item.availabilityStatus,
+                        skills: item.skills
+                    }));
+                } else {
+                    cachedEmployees = data;
+                }
+
+                renderEmployeesTable();
+                populateAllocationEmployeeDropdown();
+            } catch (err) {
+                console.error('Failed to load employees:', err);
+            }
+        }
+
+        function toggleAvailableEmployeesOnly() {
+            filterAvailableOnly = !filterAvailableOnly;
+            const btn = document.getElementById('filter-avail-btn');
+            btn.textContent = filterAvailableOnly ? 'Filter: Available Only (< 100%)' : 'Filter: All Employees';
+            loadEmployees();
+        }
+
+        function renderEmployeesTable() {
+            const tbody = document.getElementById('employees-table-body');
+            if (!cachedEmployees || cachedEmployees.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No employees found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = cachedEmployees.map(emp => {
+                const skillsHtml = emp.skills && emp.skills.length > 0
+                    ? emp.skills.map(es => `<span class="badge">${escapeHtml(es.skill.name)}: L${es.proficiency}</span>`).join(' ')
+                    : '<span style="color: #888888;">No skills assigned</span>';
+
+                return `
+                    <tr>
+                        <td>${emp.id}</td>
+                        <td><strong>${escapeHtml(emp.name)}</strong></td>
+                        <td>${escapeHtml(emp.email)}</td>
+                        <td>${skillsHtml}</td>
+                        <td><span class="badge badge-gray">${escapeHtml(emp.availabilityStatus || 'Available')}</span></td>
+                        <td>
+                            <button class="btn-danger" onclick="deleteEmployee(${emp.id})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function addEmployeeSkillRow() {
+            const container = document.getElementById('employee-skills-container');
+            const rowId = `emp-skill-row-${Date.now()}`;
+            const div = document.createElement('div');
+            div.className = 'skill-select-row';
+            div.id = rowId;
+
+            let skillOptions = cachedSkills.map(s => `<option value="${s.id}">${escapeHtml(s.name)}</option>`).join('');
+            if (skillOptions.length === 0) {
+                skillOptions = '<option value="">No skills available - add in Skills tab first</option>';
+            }
+
+            div.innerHTML = `
+                <select class="emp-skill-id-select" required>
+                    ${skillOptions}
+                </select>
+                <select class="emp-skill-prof-select" style="width: 170px;" required>
+                    <option value="1">1 - Beginner</option>
+                    <option value="2">2 - Intermediate</option>
+                    <option value="3" selected>3 - Advanced</option>
+                    <option value="4">4 - Expert</option>
+                    <option value="5">5 - Master</option>
+                </select>
+                <button type="button" class="btn-danger" onclick="document.getElementById('${rowId}').remove()">Remove</button>
+            `;
+            container.appendChild(div);
+        }
+
+        async function handleCreateEmployee(e) {
+            e.preventDefault();
+            const name = document.getElementById('emp-name').value.trim();
+            const email = document.getElementById('emp-email').value.trim();
+
+            const skillRows = document.querySelectorAll('#employee-skills-container .skill-select-row');
+            const skills = [];
+            skillRows.forEach(row => {
+                const skillId = row.querySelector('.emp-skill-id-select').value;
+                const proficiency = parseInt(row.querySelector('.emp-skill-prof-select').value);
+                if (skillId) {
+                    skills.push({
+                        skill: { id: parseInt(skillId) },
+                        proficiency: proficiency
+                    });
+                }
+            });
+
+            try {
+                const res = await fetch(`${API_BASE}/employees`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, skills })
+                });
+
+                if (res.ok) {
+                    showNotification(`Employee "${name}" saved successfully.`);
+                    document.getElementById('employee-form').reset();
+                    document.getElementById('employee-skills-container').innerHTML = '';
+                    loadEmployees();
+                } else {
+                    const err = await res.json();
+                    showNotification(err.error || 'Failed to save employee', true);
+                }
+            } catch (err) {
+                showNotification('Network error while saving employee', true);
+            }
+        }
+
+        async function deleteEmployee(id) {
+            if (!confirm('Are you sure you want to delete this employee? All their allocations will be removed.')) return;
+            try {
+                const res = await fetch(`${API_BASE}/employees/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    showNotification('Employee deleted successfully.');
+                    loadEmployees();
+                    loadAllocations();
+                } else {
+                    const err = await res.json();
+                    showNotification(err.error || 'Failed to delete employee', true);
+                }
+            } catch (err) {
+                showNotification('Error deleting employee', true);
+            }
+        }
+
+        // ==========================================
+        // 3. PROJECTS LOGIC
+        // ==========================================
+        async function loadProjects() {
+            try {
+                const res = await fetch(`${API_BASE}/projects`);
+                cachedProjects = await res.json();
+                renderProjectsTable();
+                populateProjectDropdowns();
+            } catch (err) {
+                console.error('Failed to load projects:', err);
+            }
+        }
+
+        function renderProjectsTable() {
+            const tbody = document.getElementById('projects-table-body');
+            if (!cachedProjects || cachedProjects.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No projects registered yet.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = cachedProjects.map(proj => {
+                const reqSkillsHtml = proj.requiredSkills && proj.requiredSkills.length > 0
+                    ? proj.requiredSkills.map(ps => `<span class="badge">${escapeHtml(ps.skill.name)} (Min L${ps.proficiency})</span>`).join(' ')
+                    : '<span style="color: #888888;">None</span>';
+
+                return `
+                    <tr>
+                        <td>${proj.id}</td>
+                        <td><strong>${escapeHtml(proj.name)}</strong></td>
+                        <td>${reqSkillsHtml}</td>
+                        <td>
+                            <button class="btn-secondary" onclick="viewRecommendationsForProject(${proj.id})">Recommendations</button>
+                            <button class="btn-secondary" onclick="viewCoverageForProject(${proj.id})">Coverage</button>
+                            <button class="btn-danger" onclick="deleteProject(${proj.id})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function addProjectSkillRow() {
+            const container = document.getElementById('project-skills-container');
+            const rowId = `proj-skill-row-${Date.now()}`;
+            const div = document.createElement('div');
+            div.className = 'skill-select-row';
+            div.id = rowId;
+
+            let skillOptions = cachedSkills.map(s => `<option value="${s.id}">${escapeHtml(s.name)}</option>`).join('');
+            if (skillOptions.length === 0) {
+                skillOptions = '<option value="">No skills available - add in Skills tab first</option>';
+            }
+
+            div.innerHTML = `
+                <select class="proj-skill-id-select" required>
+                    ${skillOptions}
+                </select>
+                <select class="proj-skill-prof-select" style="width: 170px;" required>
+                    <option value="1">Min: 1 - Beginner</option>
+                    <option value="2">Min: 2 - Intermediate</option>
+                    <option value="3" selected>Min: 3 - Advanced</option>
+                    <option value="4">Min: 4 - Expert</option>
+                    <option value="5">Min: 5 - Master</option>
+                </select>
+                <button type="button" class="btn-danger" onclick="document.getElementById('${rowId}').remove()">Remove</button>
+            `;
+            container.appendChild(div);
+        }
+
+        async function handleCreateProject(e) {
+            e.preventDefault();
+            const name = document.getElementById('project-name').value.trim();
+
+            const skillRows = document.querySelectorAll('#project-skills-container .skill-select-row');
+            const requiredSkills = [];
+            skillRows.forEach(row => {
+                const skillId = row.querySelector('.proj-skill-id-select').value;
+                const proficiency = parseInt(row.querySelector('.proj-skill-prof-select').value);
+                if (skillId) {
+                    requiredSkills.push({
+                        skill: { id: parseInt(skillId) },
+                        proficiency: proficiency
+                    });
+                }
+            });
+
+            try {
+                const res = await fetch(`${API_BASE}/projects`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, requiredSkills })
+                });
+
+                if (res.ok) {
+                    showNotification(`Project "${name}" created successfully.`);
+                    document.getElementById('project-form').reset();
+                    document.getElementById('project-skills-container').innerHTML = '';
+                    loadProjects();
+                } else {
+                    const err = await res.json();
+                    showNotification(err.error || 'Failed to create project', true);
+                }
+            } catch (err) {
+                showNotification('Network error while creating project', true);
+            }
+        }
+
+        async function deleteProject(id) {
+            if (!confirm('Are you sure you want to delete this project? All associated allocations will also be removed.')) return;
+            try {
+                const res = await fetch(`${API_BASE}/projects/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    showNotification('Project deleted successfully.');
+                    loadProjects();
+                    loadAllocations();
+                } else {
+                    const err = await res.json();
+                    showNotification(err.error || 'Failed to delete project', true);
+                }
+            } catch (err) {
+                showNotification('Error deleting project', true);
+            }
+        }
+
+        // ==========================================
+        // 4. ALLOCATIONS LOGIC
+        // ==========================================
+        async function loadAllocations() {
+            try {
+                const res = await fetch(`${API_BASE}/allocations`);
+                const allocations = await res.json();
+                renderAllocationsTable(allocations);
+            } catch (err) {
+                console.error('Failed to load allocations:', err);
+            }
+        }
+
+        function renderAllocationsTable(allocations) {
+            const tbody = document.getElementById('allocations-table-body');
+            if (!allocations || allocations.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No active allocations.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = allocations.map(a => `
+                <tr>
+                    <td>${a.id}</td>
+                    <td><strong>${escapeHtml(a.employee.name)}</strong></td>
+                    <td>${escapeHtml(a.project.name)}</td>
+                    <td><strong>${a.allocationPercentage}%</strong></td>
+                    <td><span class="badge badge-gray">${escapeHtml(a.allocationStatus || 'Active')}</span></td>
+                    <td>
+                        <button class="btn-danger" onclick="deleteAllocation(${a.id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function populateAllocationEmployeeDropdown() {
+            const select = document.getElementById('alloc-employee');
+            if (!select) return;
+            if (cachedEmployees.length === 0) {
+                select.innerHTML = '<option value="">No employees available</option>';
+                return;
+            }
+            select.innerHTML = cachedEmployees.map(e => `
+                <option value="${e.id}">${escapeHtml(e.name)} (${escapeHtml(e.availabilityStatus)})</option>
+            `).join('');
+            updateEmployeeCapacityNotice();
+        }
+
+        function updateEmployeeCapacityNotice() {
+            const empId = document.getElementById('alloc-employee').value;
+            const notice = document.getElementById('alloc-capacity-notice');
+            if (!empId) {
+                notice.textContent = '';
+                return;
+            }
+            const emp = cachedEmployees.find(e => e.id === parseInt(empId));
+            if (emp) {
+                notice.textContent = `Selected Employee: ${emp.name} &bull; Current Status: ${emp.availabilityStatus}`;
+            }
+        }
+
+        async function handleCreateAllocation(e) {
+            e.preventDefault();
+            const empId = parseInt(document.getElementById('alloc-employee').value);
+            const projId = parseInt(document.getElementById('alloc-project').value);
+            const percentage = parseInt(document.getElementById('alloc-percentage').value);
+
+            if (!empId || !projId || !percentage) {
+                showNotification('Please select employee, project, and percentage', true);
+                return;
+            }
+
+            const payload = {
+                employee: { id: empId },
+                project: { id: projId },
+                allocationPercentage: percentage,
+                allocationStatus: percentage === 100 ? 'Fully Allocated' : 'Partially Allocated'
+            };
+
+            try {
+                const res = await fetch(`${API_BASE}/allocations`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    showNotification(`Allocation of ${percentage}% created successfully.`);
+                    loadAllocations();
+                    loadEmployees();
+                } else {
+                    const err = await res.json();
+                    showNotification(err.error || 'Failed to create allocation. Total allocation cannot exceed 100%.', true);
+                }
+            } catch (err) {
+                showNotification('Error creating allocation', true);
+            }
+        }
+
+        async function deleteAllocation(id) {
+            if (!confirm('Are you sure you want to remove this project allocation?')) return;
+            try {
+                const res = await fetch(`${API_BASE}/allocations/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    showNotification('Allocation deleted successfully.');
+                    loadAllocations();
+                    loadEmployees();
+                } else {
+                    const err = await res.json();
+                    showNotification(err.error || 'Failed to delete allocation', true);
+                }
+            } catch (err) {
+                showNotification('Error deleting allocation', true);
+            }
+        }
+
+        // ==========================================
+        // 5. RECOMMENDATIONS LOGIC
+        // ==========================================
+        function populateProjectDropdowns() {
+            const recSelect = document.getElementById('rec-project-select');
+            const covSelect = document.getElementById('cov-project-select');
+            const allocSelect = document.getElementById('alloc-project');
+
+            const optionsHtml = cachedProjects.length > 0
+                ? cachedProjects.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('')
+                : '<option value="">No projects available</option>';
+
+            if (recSelect) recSelect.innerHTML = optionsHtml;
+            if (covSelect) covSelect.innerHTML = optionsHtml;
+            if (allocSelect) allocSelect.innerHTML = optionsHtml;
+        }
+
+        function viewRecommendationsForProject(projectId) {
+            switchTab('recommendations');
+            const select = document.getElementById('rec-project-select');
+            if (select) select.value = projectId;
+            loadRecommendationsForSelectedProject();
+        }
+
+        async function loadRecommendationsForSelectedProject() {
+            const select = document.getElementById('rec-project-select');
+            const projectId = select.value;
+            if (!projectId) return;
+
+            const project = cachedProjects.find(p => p.id === parseInt(projectId));
+            const tbody = document.getElementById('recommendations-table-body');
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Calculating best-fit candidates...</td></tr>';
+
+            try {
+                const res = await fetch(`${API_BASE}/projects/${projectId}/recommendations`);
+                const recommendations = await res.json();
+
+                document.getElementById('rec-results-title').textContent = project ? `Ranked Candidates for "${project.name}"` : 'Recommendations';
+                document.getElementById('rec-results-subtitle').textContent = `Total candidates ranked: ${recommendations.length}`;
+
+                if (!recommendations || recommendations.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No available employees match the required skills for this project.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = recommendations.map((rec, index) => {
+                    const skillsBreakdown = rec.matchedSkills.map(s => {
+                        const statusBadge = s.meetsOrExceeds ? '&#10003; Meets' : '&#9888; Below';
+                        return `<span class="badge ${s.meetsOrExceeds ? '' : 'badge-gray'}">${escapeHtml(s.skillName)}: L${s.employeeProficiency}/${s.requiredProficiency} (${statusBadge})</span>`;
+                    }).join(' ');
+
+                    return `
+                        <tr>
+                            <td><strong>#${index + 1}</strong></td>
+                            <td>
+                                <strong>${escapeHtml(rec.employeeName)}</strong><br>
+                                <span style="font-size: 11px; color: #666666;">${escapeHtml(rec.email)}</span>
+                            </td>
+                            <td>
+                                <div><strong>${rec.matchedSkillsCount} / ${rec.totalRequiredSkills}</strong> skills matched</div>
+                                <div style="margin-top: 4px;">${skillsBreakdown}</div>
+                            </td>
+                            <td>
+                                <strong>${rec.remainingAvailability}% available</strong><br>
+                                <span style="font-size: 11px; color: #666666;">Current: ${rec.currentAllocation}%</span>
+                            </td>
+                            <td>
+                                <strong style="font-size: 16px;">${rec.matchScore}</strong>
+                            </td>
+                            <td>
+                                <button class="btn-primary" onclick="quickAllocate(${rec.employeeId}, ${projectId}, ${Math.min(50, rec.remainingAvailability)})">
+                                    Allocate
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                console.error('Error fetching recommendations:', err);
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Failed to load recommendations.</td></tr>';
+            }
+        }
+
+        function quickAllocate(employeeId, projectId, suggestedPercentage) {
+            switchTab('allocations');
+            document.getElementById('alloc-employee').value = employeeId;
+            document.getElementById('alloc-project').value = projectId;
+            if (suggestedPercentage > 0) {
+                document.getElementById('alloc-percentage').value = suggestedPercentage >= 50 ? '50' : '25';
+            }
+            updateEmployeeCapacityNotice();
+            showNotification(`Ready to allocate. Confirm the percentage and click "Assign Allocation".`);
+        }
+
+        // ==========================================
+        // 6. SKILL COVERAGE LOGIC
+        // ==========================================
+        function viewCoverageForProject(projectId) {
+            switchTab('coverage');
+            const select = document.getElementById('cov-project-select');
+            if (select) select.value = projectId;
+            loadCoverageForSelectedProject();
+        }
+
+        async function loadCoverageForSelectedProject() {
+            const select = document.getElementById('cov-project-select');
+            const projectId = select.value;
+            if (!projectId) return;
+
+            const tbody = document.getElementById('coverage-table-body');
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Analyzing skill coverage...</td></tr>';
+
+            try {
+                const res = await fetch(`${API_BASE}/projects/${projectId}/skill-coverage`);
+                const coverage = await res.json();
+
+                // Summary Metric Cards
+                const metricsBox = document.getElementById('coverage-summary-metrics');
+                metricsBox.style.display = 'block';
+                metricsBox.innerHTML = `
+                    <div class="metric-box">
+                        <div class="metric-value">${coverage.totalRequiredSkills}</div>
+                        <div class="metric-label">Required Skills</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-value">${coverage.coveredSkillsCount}</div>
+                        <div class="metric-label">Skills Covered</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-value">${coverage.gapCount}</div>
+                        <div class="metric-label">Skill Gaps</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-value">${coverage.isFullyCovered ? '100%' : Math.round((coverage.coveredSkillsCount / (coverage.totalRequiredSkills || 1)) * 100) + '%'}</div>
+                        <div class="metric-label">Staffing Feasibility</div>
+                    </div>
+                `;
+
+                if (!coverage.coverageDetails || coverage.coverageDetails.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">This project has no required skills configured.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = coverage.coverageDetails.map(item => {
+                    const statusBadge = item.isCovered
+                        ? '<span class="badge" style="background: #111111; color: #ffffff;">&#10003; COVERED</span>'
+                        : '<span class="badge badge-gray">&#9888; SKILL GAP</span>';
+
+                    const availableEmpList = item.availableMatchingEmployees && item.availableMatchingEmployees.length > 0
+                        ? item.availableMatchingEmployees.map(e => `
+                            <div>
+                                &bull; <strong>${escapeHtml(e.employeeName)}</strong>
+                                (Proficiency: L${e.proficiency}, Available: ${e.remainingCapacity}%)
+                                ${e.meetsRequiredProficiency ? '<strong>[Meets Level]</strong>' : '<span style="color:#666;">[Below Level]</span>'}
+                            </div>
+                          `).join('')
+                        : '<span style="color: #888888;">No available employee has this skill</span>';
+
+                    return `
+                        <tr>
+                            <td><strong>${escapeHtml(item.skillName)}</strong></td>
+                            <td>Level ${item.requiredProficiency} (${getProficiencyText(item.requiredProficiency)})</td>
+                            <td>${statusBadge}</td>
+                            <td>${availableEmpList}</td>
+                            <td><strong>${escapeHtml(item.gapStatus)}</strong></td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                console.error('Error fetching skill coverage:', err);
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Failed to load skill coverage.</td></tr>';
+            }
+        }
+
+        // Helper: HTML Escaping
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+    </script>
+</body>
+</html>
